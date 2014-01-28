@@ -6,6 +6,7 @@ import (
 	"github.com/nfnt/resize"
 	"image"
 	"image/jpeg"
+	"image/png"
 	"log"
 	"os"
 	"path/filepath"
@@ -45,7 +46,7 @@ func main() {
 	}
 
 	// Decode image to image.Image object.
-	img, err := jpeg.Decode(imageFile)
+	img, format, err := image.Decode(imageFile)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -92,5 +93,12 @@ func main() {
 	}
 	defer outputFile.Close()
 
-	jpeg.Encode(outputFile, outputImage, nil)
+	switch format {
+	case "png":
+		png.Encode(outputFile, outputImage)
+	default:
+		// jpeg by default
+		jpeg.Encode(outputFile, outputImage, nil)
+	}
+
 }
